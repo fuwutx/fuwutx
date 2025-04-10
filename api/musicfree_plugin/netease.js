@@ -93,10 +93,21 @@ module.exports = {
                 ],
             },
             {
-                title: "日系私人雷达",
+                title: "私人雷达",
                 data: [
                     {
                         id: "3136952023",
+                        description: "新歌榜的描述",
+                        coverImg: "新歌榜的封面",
+                        title: "私人雷达",
+                    },
+                ],
+            },
+            {
+                title: "日系私人雷达",
+                data: [
+                    {
+                        id: "2829896389",
                         description: "新歌榜的描述",
                         coverImg: "新歌榜的封面",
                         title: "日系私人雷达",
