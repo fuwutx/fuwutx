@@ -1,7 +1,7 @@
 module.exports = {
     platform: "Netease",
     author: "fuwutx",
-    version: "0.1.0",
+    version: "0.1.1",
     appVersion: ">0.0.0",
     cacheControl: "no-store",
     primaryKey: ["id"],
@@ -17,17 +17,47 @@ module.exports = {
     //     // 搜索的具体逻辑
     // },
     // 获取音乐的真实 url
-    // async getMediaSource(mediaItem, quality) {
-    //     // ...
-    // },
+    async getMediaSource(mediaItem, quality) {
+        return {
+            url: "https://v.iarc.top/?type=url&id=" + mediaItem.id,
+        }
+    },
     // 获取音乐详情
-    // async getMusicInfo(musicItem) {
-    //     // ...
-    // },
+    async getMusicInfo(musicItem) {
+        return fetch("https://v.iarc.top/?type=song&id=" + musicItem.id)
+            .then(res => res.json())
+            .then(res => {
+                return {
+                    // 媒体来源
+                    platform: "Netease",
+                    // 媒体ID
+                    id: musicItem.id,
+                    /** 作者 */
+                    artist: res[0].artist,
+                    /** 歌曲标题 */
+                    title: res[0].name,
+
+                    /** 默认音源 */
+                    url: res[0].url,
+                    /** 专辑封面图 */
+                    artwork: res[0].pic,
+
+                    /** 歌词URL */
+                    lrc: res[0].lrc,
+                };
+            })
+    },
     // 获取歌词
-    // async getLyric(musicItem) {
-    //     // ...
-    // },
+    async getLyric(musicItem) {
+        return fetch("https://v.iarc.top/?type=lrc&id=" + musicItem.id)
+            .then(res => res.text())
+            .then(res => {
+                return {
+                    rawLrc: res,
+                    translation: "",
+                }
+            })
+    },
     // 获取专辑详情
     // async getAlbumInfo(albumItem, page) {
     //     // ...
@@ -54,7 +84,7 @@ module.exports = {
                 return [];
             }
         }
-        return fetch("https://v.iarc.top/playlist?type=playlist&id=" + urlLike)
+        return fetch("https://v.iarc.top/?type=playlist&id=" + urlLike)
             .then(res => res.json())
             .then(res => {
                 return res.map(item => {
