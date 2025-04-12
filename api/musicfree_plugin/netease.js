@@ -25,6 +25,12 @@ module.exports = {
     },
     // 获取音乐详情
     async getMusicInfo(musicItem) {
+        const response = await fetch(musicItem.artwork, {
+            method: 'GET', // or 'GET' if needed
+            redirect: 'follow',
+        });
+        const redirectUrl = response.url;
+
         return fetch(this.base + "?type=song&id=" + musicItem.id)
             .then(res => res.json())
             .then(res => {
@@ -41,7 +47,7 @@ module.exports = {
                     /** 默认音源 */
                     url: res[0].url,
                     /** 专辑封面图 */
-                    artwork: res[0].pic,
+                    artwork: redirectUrl.split("?")[0],
 
                     /** 歌词URL */
                     lrc: res[0].lrc,
