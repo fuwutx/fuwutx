@@ -1,3 +1,4 @@
+
 module.exports = {
     platform: "Netease",
     author: "fuwutx",
@@ -56,6 +57,8 @@ module.exports = {
     // 获取音乐详情
     async getMusicInfo(musicItem) {
         if (!this.song) {
+            const token = "58e19ffb63ce9e247b152941c3513b8d";
+            
             this.fetchSongPromise = fetch("https://api.toubiec.cn/api/music_v1.php", {
                 method: "POST",
                 headers: {
