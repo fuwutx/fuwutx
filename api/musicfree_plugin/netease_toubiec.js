@@ -5,7 +5,7 @@ module.exports = {
     appVersion: ">0.0.0",
     cacheControl: "no-store",
     primaryKey: ["id"],
-    srcUrl: "https://yilong.eu.org/api/musicfree_plugin/netease_toubiec.js",
+    srcUrl: "https://yilong.eu.org/api/musicfree_plugin/netease.js",
     hints: {
         importMusicSheet: [
             "请输入id或url"
@@ -55,6 +55,37 @@ module.exports = {
     },
     // 获取音乐详情
     async getMusicInfo(musicItem) {
+        if (!this.song) {
+            this.fetchSongPromise = fetch("https://api.toubiec.cn/api/music_v1.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    level: "lossless",
+                    token: "aaadf4c03a188ccd7ad887a5bedabbd6",
+                    type: "song",
+                    url: "https://music.163.com/#/song?id=" + mediaItem.id,
+                }),
+            })
+                .then(res => res.json())
+                .then(res => {
+                    this.song = {
+                        id: mediaItem.id,
+                        url: res.url_info.url,
+                        name: res.song_info.name,
+                        artist: res.song_info.artist,
+                        cover: res.song_info.cover,
+                        lrc: res.lrc.lyric,
+                        yrc: res.yrc.lyric,
+                        tlrc: res.lrc.tlyric
+                    }
+                })
+
+            await this.fetchSongPromise;
+        }
+
         return {
             // 媒体来源
             platform: "Netease",
