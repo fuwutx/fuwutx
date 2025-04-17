@@ -5,7 +5,7 @@ module.exports = {
     appVersion: ">0.0.0",
     cacheControl: "no-store",
     primaryKey: ["id"],
-    srcUrl: "https://yilong.eu.org/api/musicfree_plugin/netease.js",
+    srcUrl: "https://yilong.eu.org/api/musicfree_plugin/netease_toubiec.js",
     hints: {
         importMusicSheet: [
             "请输入id或url"
