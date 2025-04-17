@@ -58,7 +58,7 @@ module.exports = {
     async getMusicInfo(musicItem) {
         if (!this.song) {
             const token = "58e19ffb63ce9e247b152941c3513b8d";
-            
+
             this.fetchSongPromise = fetch("https://api.toubiec.cn/api/music_v1.php", {
                 method: "POST",
                 headers: {
@@ -69,13 +69,13 @@ module.exports = {
                     level: "lossless",
                     token: "aaadf4c03a188ccd7ad887a5bedabbd6",
                     type: "song",
-                    url: "https://music.163.com/#/song?id=" + mediaItem.id,
+                    url: "https://music.163.com/#/song?id=" + musicItem.id,
                 }),
             })
                 .then(res => res.json())
                 .then(res => {
                     this.song = {
-                        id: mediaItem.id,
+                        id: musicItem.id,
                         url: res.url_info.url,
                         name: res.song_info.name,
                         artist: res.song_info.artist,
