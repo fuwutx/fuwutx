@@ -2,7 +2,7 @@
 module.exports = {
     platform: "Netease",
     author: "fuwutx",
-    version: "0.1.1",
+    version: "0.1.2",
     appVersion: ">0.0.0",
     cacheControl: "no-store",
     primaryKey: ["id"],
@@ -110,6 +110,8 @@ module.exports = {
     },
     // 获取歌词
     async getLyric(musicItem) {
+        // delay for 1 second
+        await new Promise(resolve => setTimeout(resolve, 1000));
         await this.fetchSongPromise;
         return {
             rawLrc: this.song.lrc,
