@@ -2,7 +2,7 @@
 module.exports = {
     platform: "Netease",
     author: "fuwutx",
-    version: "0.1.2",
+    version: "0.1.3",
     appVersion: ">0.0.0",
     cacheControl: "no-store",
     primaryKey: ["id"],
@@ -56,7 +56,7 @@ module.exports = {
     },
     // 获取音乐详情
     async getMusicInfo(musicItem) {
-        if (!this.song) {
+        if (!this.song || !this.song.id !== musicItem.id) {
             const token = "58e19ffb63ce9e247b152941c3513b8d";
 
             this.fetchSongPromise = fetch("https://api.toubiec.cn/api/music_v1.php", {
@@ -111,7 +111,6 @@ module.exports = {
     // 获取歌词
     async getLyric(musicItem) {
         // delay for 1 second
-        await new Promise(resolve => setTimeout(resolve, 1000));
         await this.fetchSongPromise;
         return {
             rawLrc: this.song.lrc,
