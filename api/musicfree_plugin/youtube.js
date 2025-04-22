@@ -51,8 +51,8 @@ module.exports = {
             id: mediaItem.id,
             artist: musicInfo.author,
             title: musicInfo.title,
-            artwork: musicInfo.thumbnail.thumbnails.pop().url,
-            url: data.streamingData.adaptiveFormats.pop().url
+            artwork: `https://i.ytimg.com/vi/${mediaItem.id}/maxresdefault.jpg`,
+            url: data.streamingData.adaptiveFormats.find(item => item.audioQuality === "AUDIO_QUALITY_MEDIUM").url,
         }
         return {
             "url": this.song.url,
