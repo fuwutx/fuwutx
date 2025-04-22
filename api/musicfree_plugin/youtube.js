@@ -51,7 +51,7 @@ module.exports = {
             id: mediaItem.id,
             artist: musicInfo.author,
             title: musicInfo.title,
-            artwork: `https://i.ytimg.com/vi/${mediaItem.id}/maxresdefault.jpg`,
+            artwork: `https://i.ytimg.com/vi/${mediaItem.id}/maxresdefault.jpg` || `https://i.ytimg.com/vi/${mediaItem.id}/default.jpg`,
             url: data.streamingData.adaptiveFormats.find(item => item.audioQuality === "AUDIO_QUALITY_MEDIUM").url,
         }
         return {
@@ -115,7 +115,7 @@ module.exports = {
                     return {
                         id: item.id,
                         description: item.snippet.description,
-                        coverImg: item.snippet.thumbnails.maxres?.url || item.snippet.thumbnails.high?.url || item.snippet.thumbnails.default?.url,
+                        coverImg: item.snippet.thumbnails.maxres?.url || item.snippet.thumbnails.default?.url,
                         title: item.snippet.title
                     }
                 })
@@ -126,7 +126,7 @@ module.exports = {
                     return {
                         id: item.id,
                         description: item.snippet.description,
-                        coverImg: item.snippet.thumbnails.maxres?.url || item.snippet.thumbnails.high?.url || item.snippet.thumbnails.default?.url,
+                        coverImg: item.snippet.thumbnails.maxres?.url || item.snippet.thumbnails.default?.url,
                         title: item.snippet.title
                     }
                 })
@@ -139,7 +139,7 @@ module.exports = {
             part: 'snippet,contentDetails,id,status',
             playlistId: topListItem.id,
             maxResults: 50,
-            pageToken: this.pageToken || "",
+            pageToken: page !== 1 ? this.pageToken : "",
             key: env.getUserVariables().key
         });
         const response = await fetch(`${this.base}/playlistItems?${params}`);
