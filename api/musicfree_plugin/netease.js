@@ -1,7 +1,7 @@
 module.exports = {
     platform: "Netease",
     author: "fuwutx",
-    version: "0.1.1",
+    version: "0.1.2",
     appVersion: ">0.0.0",
     cacheControl: "no-store",
     primaryKey: ["id"],
@@ -150,7 +150,7 @@ module.exports = {
     async getTopLists() {
         return [
             {
-                title: "喜欢",
+                title: "我的",
                 data: [
                     {
                         id: "9493075761",
@@ -158,11 +158,6 @@ module.exports = {
                         coverImg: "新歌榜的封面",
                         title: "喜欢",
                     },
-                ],
-            },
-            {
-                title: "推荐",
-                data: [
                     {
                         id: "12610418982",
                         description: "新歌榜的描述",
@@ -172,40 +167,7 @@ module.exports = {
                 ],
             },
             {
-                title: "私人雷达",
-                data: [
-                    {
-                        id: "3136952023",
-                        description: "新歌榜的描述",
-                        coverImg: "新歌榜的封面",
-                        title: "私人雷达",
-                    },
-                ],
-            },
-            {
-                title: "日系私人雷达",
-                data: [
-                    {
-                        id: "2829896389",
-                        description: "新歌榜的描述",
-                        coverImg: "新歌榜的封面",
-                        title: "日系私人雷达",
-                    },
-                ],
-            },
-            {
-                title: "韩系私人雷达",
-                data: [
-                    {
-                        id: "2829920189",
-                        description: "新歌榜的描述",
-                        coverImg: "新歌榜的封面",
-                        title: "韩系私人雷达",
-                    },
-                ],
-            },
-            {
-                title: "云音乐日语榜",
+                title: "榜单",
                 data: [
                     {
                         id: "5059644681",
@@ -213,16 +175,34 @@ module.exports = {
                         coverImg: "新歌榜的封面",
                         title: "云音乐日语榜",
                     },
-                ],
-            },
-            {
-                title: "云音乐韩语榜",
-                data: [
                     {
                         id: "745956260",
                         description: "新歌榜的描述",
                         coverImg: "新歌榜的封面",
                         title: "云音乐韩语榜",
+                    },
+                ],
+            },
+            {
+                title: "雷达",
+                data: [
+                    {
+                        id: "3136952023",
+                        description: "新歌榜的描述",
+                        coverImg: "新歌榜的封面",
+                        title: "私人雷达",
+                    },
+                    {
+                        id: "2829896389",
+                        description: "新歌榜的描述",
+                        coverImg: "新歌榜的封面",
+                        title: "日系私人雷达",
+                    },
+                    {
+                        id: "2829920189",
+                        description: "新歌榜的描述",
+                        coverImg: "新歌榜的封面",
+                        title: "韩系私人雷达",
                     },
                 ],
             },
