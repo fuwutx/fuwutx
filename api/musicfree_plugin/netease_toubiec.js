@@ -13,42 +13,62 @@ module.exports = {
     },
     userVariables: [],
     supportedSearchType: [],
-    base: "https://v.iarc.top/",
+    base: "https://api.toubiec.cn/api/music_v1.php",
+    token: "aaadf4c03a188ccd7ad887a5bedabbd6",
+    bearer: "58e19ffb63ce9e247b152941c3513b8d",
     // async search(query, page, type) {
     //     // 搜索的具体逻辑
     // },
     // 获取音乐的真实 url
     async getMediaSource(mediaItem, quality) {
-        const token = "58e19ffb63ce9e247b152941c3513b8d"
+        let level = "standard";
+        switch (quality) {
+            case "super":
+                level = "lossless";
+                break;
+            case "high":
+                level = "exhigh";
+                break;
+            case "low":
+                level = "standard";
+                break;
+            case "standard":
+                level = "standard";
+                break;
+        }
 
-        this.fetchSongPromise = fetch("https://api.toubiec.cn/api/music_v1.php", {
+
+        this.fetchSongPromise = fetch(this.base, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
+                "Authorization": `Bearer ${this.bearer}`,
             },
             body: JSON.stringify({
-                level: "lossless",
-                token: "aaadf4c03a188ccd7ad887a5bedabbd6",
+                level,
+                token: this.token,
                 type: "song",
                 url: "https://music.163.com/#/song?id=" + mediaItem.id,
             }),
         })
-            .then(res => res.json())
-            .then(res => {
-                this.song = {
-                    id: mediaItem.id,
-                    url: res.url_info.url,
-                    name: res.song_info.name,
-                    artist: res.song_info.artist,
-                    cover: res.song_info.cover,
-                    lrc: res.lrc.lyric,
-                    yrc: res.yrc.lyric,
-                    tlrc: res.lrc.tlyric
-                }
-            })
+        const res = await this.fetchSongPromise;
+        const data = await res.json();
 
-        await this.fetchSongPromise;
+        this.song = {
+            platform: "Netease",
+            id: mediaItem.id,
+            artist: data.song_info.artist,
+            title: data.song_info.name,
+            duration: data.url_info.interval,
+            album: data.song_info.album,
+            artwork: data.song_info.cover,
+            url: data.url_info.url,
+            rawLrc: data.lrc.lyric,
+
+            rawtLrc: data.lrc.tlyric,
+            alia: data.song_info.alia
+        }
+
         return {
             url: this.song.url,
         }
@@ -56,56 +76,41 @@ module.exports = {
     // 获取音乐详情
     async getMusicInfo(musicItem) {
         if (!this.song || !this.song.id !== musicItem.id) {
-            const token = "58e19ffb63ce9e247b152941c3513b8d";
-
-            this.fetchSongPromise = fetch("https://api.toubiec.cn/api/music_v1.php", {
+            this.fetchSongPromise = fetch(this.base, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
+                    "Authorization": `Bearer ${this.bearer}`,
                 },
                 body: JSON.stringify({
                     level: "lossless",
-                    token: "aaadf4c03a188ccd7ad887a5bedabbd6",
+                    token: this.token,
                     type: "song",
                     url: "https://music.163.com/#/song?id=" + musicItem.id,
                 }),
             })
-                .then(res => res.json())
-                .then(res => {
-                    this.song = {
-                        id: musicItem.id,
-                        url: res.url_info.url,
-                        name: res.song_info.name,
-                        artist: res.song_info.artist,
-                        cover: res.song_info.cover,
-                        lrc: res.lrc.lyric,
-                        yrc: res.yrc.lyric,
-                        tlrc: res.lrc.tlyric
-                    }
-                })
+            const res = await this.fetchSongPromise;
+            const data = await res.json();
+
+            this.song = {
+                platform: "Netease",
+                id: musicItem.id,
+                artist: data.song_info.artist,
+                title: data.song_info.name,
+                duration: data.url_info.interval,
+                album: data.song_info.album,
+                artwork: data.song_info.cover,
+                url: data.url_info.url,
+                rawLrc: data.lrc.lyric,
+
+                rawtLrc: data.lrc.tlyric,
+                alia: data.song_info.alia
+            }
 
             await this.fetchSongPromise;
         }
 
-        return {
-            // 媒体来源
-            platform: "Netease",
-            // 媒体ID
-            id: this.song.id,
-            /** 作者 */
-            artist: this.song.artist,
-            /** 歌曲标题 */
-            title: this.song.name,
-
-            /** 默认音源 */
-            url: this.song.url,
-            /** 专辑封面图 */
-            artwork: this.song.cover,
-
-            /** 歌词URL */
-            lrc: this.song.lrc,
-        };
+        return this.song;
     },
     // 获取歌词
     async getLyric(musicItem) {
@@ -113,8 +118,8 @@ module.exports = {
         await new Promise(resolve => setTimeout(resolve, 1000));
         await this.fetchSongPromise;
         return {
-            rawLrc: this.song.lrc,
-            translation: this.song.tlrc,
+            rawLrc: this.song.rawLrc,
+            translation: this.song.rawtLrc,
         }
     },
     // 获取专辑详情
@@ -130,74 +135,13 @@ module.exports = {
     //     // ...
     // },
     // 导入单曲
-    async importMusicItem(urlLike) {
-        if (urlLike.startsWith("http")) {
-            let id = urlLike.split("id=")[1];
-            if (id) {
-                urlLike = id;
-            } else {
-                return [];
-            }
-        }
-
-        return fetch(this.base + "?type=song&id=" + urlLike)
-            .then(res => res.json())
-            .then(res => {
-                return {
-                    // 媒体来源
-                    platform: "Netease",
-                    // 媒体ID
-                    id: urlLike,
-                    /** 作者 */
-                    artist: res[0].artist,
-                    /** 歌曲标题 */
-                    title: res[0].name,
-
-                    /** 默认音源 */
-                    url: res[0].url,
-                    /** 专辑封面图 */
-                    artwork: res[0].pic,
-
-                    /** 歌词URL */
-                    lrc: res[0].lrc,
-                };
-            })
-    },
+    // async importMusicItem(urlLike) {
+    //     // ...
+    // },
     // 导入歌单
-    async importMusicSheet(urlLike) {
-        if (urlLike.startsWith("http")) {
-            let id = urlLike.split("id=")[1];
-            if (id) {
-                urlLike = id;
-            } else {
-                return [];
-            }
-        }
-
-        return fetch(this.base + "?type=playlist&id=" + urlLike)
-            .then(res => res.json())
-            .then(res => {
-                return res.map(item => {
-                    return {
-                        // 媒体来源
-                        platform: "Netease",
-                        // 媒体ID
-                        id: item.url.split("&id=")[1],
-                        /** 作者 */
-                        artist: item.artist,
-                        /** 歌曲标题 */
-                        title: item.name,
-
-                        /** 默认音源 */
-                        url: item.url,
-                        /** 专辑封面图 */
-                        artwork: item.pic,
-                        /** 歌词URL */
-                        lrc: item.lrc,
-                    };
-                });
-            })
-    },
+    // async importMusicSheet(urlLike) {
+    //     // ...
+    // },
     // 获取榜单列表
     async getTopLists() {
         return [
@@ -262,32 +206,31 @@ module.exports = {
     },
     // 获取榜单详情
     async getTopListDetail(topListItem, page) {
-        return fetch(this.base + "?type=playlist&id=" + topListItem.id)
-            .then(res => res.json())
-            .then(res => {
+        const res = await fetch(this.base, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${this.bearer}`,
+            },
+            body: JSON.stringify({
+                token: this.token,
+                type: "playlist",
+                url: "https://music.163.com/#/playlist?id=" + topListItem.id,
+            }),
+        })
+        const data = await res.json();
+        return {
+            musicList: data.data.map(item => {
                 return {
-                    musicList: res.map(item => {
-                        return {
-                            // 媒体来源
-                            platform: "Netease",
-                            // 媒体ID
-                            id: item.url.split("&id=")[1],
-                            /** 作者 */
-                            artist: item.artist,
-                            /** 歌曲标题 */
-                            title: item.name,
-
-                            /** 默认音源 */
-                            // url: item.url,
-                            /** 专辑封面图 */
-                            // artwork: item.pic,
-
-                            /** 歌词URL */
-                            // lrc: item.lrc,
-                        };
-                    }),
+                    platform: "Netease",
+                    id: item.id,
+                    artist: item.artist,
+                    title: item.name,
+                    album: item.album,
+                    artwork: item.cover
                 };
-            })
+            }),
+        }
     },
     // // 获取推荐歌单 tag
     // async getRecommendSheetTags() {
