@@ -117,6 +117,7 @@ module.exports = {
         // delay for 1 second
         await new Promise(resolve => setTimeout(resolve, 1000));
         await this.fetchSongPromise;
+        await new Promise(resolve => setTimeout(resolve, 500));
         return {
             rawLrc: this.song.rawLrc,
             translation: this.song.rawtLrc,
