@@ -75,7 +75,7 @@ module.exports = {
     },
     // 获取音乐详情
     async getMusicInfo(musicItem) {
-        if (!this.song || !this.song.id !== musicItem.id) {
+        if (!this.song || this.song.id !== musicItem.id) {
             this.fetchSongPromise = fetch(this.base, {
                 method: "POST",
                 headers: {
