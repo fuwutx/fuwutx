@@ -20,7 +20,7 @@ module.exports = {
     async getMediaSource(mediaItem, quality) {
         const data = await fetchData("song_url_v1", { ids: "[" + mediaItem.id + "]" });
         return {
-            url: data?.data[0]?.url || "https://v.iarc.top/?server=netease&type=url&id=" + mediaItem.id,
+            url: data.data && data.data[0]?.url || "https://v.iarc.top/?server=netease&type=url&id=" + mediaItem.id,
         };
     },
     // 获取音乐详情
