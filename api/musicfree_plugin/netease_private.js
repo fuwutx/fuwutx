@@ -13,7 +13,6 @@ module.exports = {
     },
     userVariables: [],
     supportedSearchType: [],
-    base: "https://api.toubiec.cn/api/music_v1.php",
     // async search(query, page, type) {
     //     // 搜索的具体逻辑
     // },
@@ -21,7 +20,7 @@ module.exports = {
     async getMediaSource(mediaItem, quality) {
         const data = await fetchData("song_url_v1", { ids: "[" + mediaItem.id + "]" });
         return {
-            url: data.data[0].url || "https://v.iarc.top/?server=netease&type=url&id=" + mediaItem.id,
+            url: data?.data[0]?.url || "https://v.iarc.top/?server=netease&type=url&id=" + mediaItem.id,
         };
     },
     // 获取音乐详情
