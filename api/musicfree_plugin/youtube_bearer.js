@@ -116,7 +116,7 @@ module.exports = {
             channelId: 'UCvz5CzQNXqnHohbCUwYVhUg',
             maxResults: 50,
             // key: env.getUserVariables().key
-        }).toString();
+        });
         const response = await fetch(`${this.base}/playlists?${params}`, {
             headers: {
                 "Authorization": `Bearer ${token.access_token}`
