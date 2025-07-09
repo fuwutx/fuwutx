@@ -107,7 +107,7 @@ module.exports = {
                 client_secret: env.getUserVariables().clientSecret,
                 refresh_token: env.getUserVariables().refreshToken,
                 grant_type: 'refresh_token'
-            })
+            }).toString()
         });
         const token = await tokenResponse.json();
 
@@ -130,7 +130,7 @@ module.exports = {
             id: recommend.join(","),
             maxResults: 50,
             // key: env.getUserVariables().key
-        }).toString();
+        });
         const recommendResponse = await fetch(`${this.base}/playlists?${recommendParams}`, {
             headers: {
                 "Authorization": `Bearer ${token.access_token}`
