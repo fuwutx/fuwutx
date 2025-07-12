@@ -90,6 +90,17 @@ module.exports = {
             })
         },
         {
+            title: "榜单",
+            data: playlist.filter(item => item.specialType === 10).map(item => {
+                return {
+                    id: item.id,
+                    description: item.description,
+                    coverImg: item.coverImgUrl,
+                    title: item.name,
+                };
+            })
+        },
+        {
             title: "官方歌单",
             data: playlist.filter(item => item.specialType === 100).map(item => {
                 return {
