@@ -1,4 +1,5 @@
-const axios = require("axios");
+let axios;
+if(!axios) axios = require("axios");
 
 module.exports = {
     platform: "Netease",
