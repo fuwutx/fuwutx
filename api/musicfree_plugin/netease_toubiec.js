@@ -1,4 +1,6 @@
-if(!axios) axios = require("axios");
+var axios = (typeof window !== "undefined" && window.axios)
+    ? window.axios
+    : require("axios");
 
 module.exports = {
     platform: "Netease",
