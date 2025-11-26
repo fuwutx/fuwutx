@@ -13,7 +13,7 @@ module.exports = {
     },
     userVariables: [],
     supportedSearchType: [],
-    base: "https://api.toubiec.cn/wyapi",
+    base: "https://wyapi-2.toubiec.cn/api",
     // async search(query, page, type) {
     //     // 搜索的具体逻辑
     // },
@@ -21,73 +21,55 @@ module.exports = {
     async getMediaSource(mediaItem, quality) {
         let level = "standard";
         switch (quality) {
-            case "super":
-                level = "lossless";
-                break;
             case "high":
                 level = "exhigh";
                 break;
-            case "low":
-                level = "standard";
+            case "super":
+                level = "lossless";
                 break;
-            case "standard":
+            default:
                 level = "standard";
-                break;
         }
-
-
-        const res = await fetch(this.base + "/getMusicUrl.php?id=" + mediaItem.id + "&level=" + level, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
+        const res = await axios(this.base + "/music/url", {
+            method: "POST",
+            data: {
+                id: mediaItem.id,
+                level
+            }
         })
-        const data = await res.json();
-
-        return {
-            url: data.data[0].url
-        }
+        return { url: res.data.data[0].url };
     },
     // 获取音乐详情
     async getMusicInfo(musicItem) {
-        const res = await fetch(this.base + "/getSongDetail.php?id=" + musicItem.id, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
+        const res = await axios(this.base + "/music/detail", {
+            method: "POST",
+            data: {
+                id: musicItem.id.toString(),
+            }
         })
-        const data = await res.json();
-
+        const data = res.data.data;
         this.song = {
             platform: "Netease",
-            id: musicItem.id,
-            artist: data.data.singer,
-            title: data.data.name,
-            duration: data.data.duration,
-            album: data.data.album,
-            artwork: data.data.picimg,
-            // url: data.url_info.url,
-            // rawLrc: data.lrc.lyric,
-
-            // rawtLrc: data.lrc.tlyric,
-            // alia: data.song_info.alia
-        }
-
+            id: data.id,
+            title: data.name,
+            artist: data.singer,
+            artwork: data.picimg,
+            album: data.album,
+        };
         return this.song;
     },
     // 获取歌词
     async getLyric(musicItem) {
-        const res = await fetch(this.base + "/getLyric.php?id=" + musicItem.id, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
+        const res = await axios(this.base + "/music/lyric", {
+            method: "POST",
+            data: {
+                id: musicItem.id.toString(),
+            }
         })
-        const data = await res.json();
-
+        const data = res.data.data;
         return {
-            rawLrc: data.data.lrc,
-            translation: data.data.tlyric ? data.data.tlyric : null,
+            rawLrc: data.lrc,
+            translation: data.tlyric ? data.tlyric : null,
         }
     },
     // 获取专辑详情
@@ -174,15 +156,15 @@ module.exports = {
     },
     // 获取榜单详情
     async getTopListDetail(topListItem, page) {
-        const res = await fetch(this.base + "/getPlaylistDetail.php?id=" + topListItem.id, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
+        const res = await axios(this.base + "/music/playlist", {
+            method: "POST",
+            data: {
+                id: topListItem.id,
+            }
         })
-        const data = await res.json();
+        const data = res.data.data.tracks;
         return {
-            musicList: data.data.tracks.map(item => {
+            musicList: data.map(item => {
                 return {
                     platform: "Netease",
                     id: item.id,
